@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+	<link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+	<!-- easyUI插件是依赖于jQuery html文件是从上往下地进行加载 所以先导jQuery -->
+	<script type="text/javascript" src="../js/jquery-1.8.3.js"></script>
+	<script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+
+<script type="text/javascript">
+	function addTabs(){
+	//添加新选项卡面板
+		var result = $("#tt").tabs("exists","新选项卡面板")
+		if(result){
+			$("#tt").tabs("select","新选项卡面板")
+		}else{
+			$("#tt").tabs("add",{
+				title:"新选项卡面板",
+				selected:true
+			});
+		}		
+	}
+	
+
+</script>
+
+</head>
+<!--
+	给节点指定class就可以使用easyUI提供的控件 
+	easyUI中所有的控件命名规则:easyUI-控件名字
+	data-options:设置控件属性
+	title:标题
+	iconCls:指定图标,图标是在../js/easyui/themes/icon.css这里面
+	
+	region:定义布局面板的位置(只有north south east west center这五个值)
+	split:可以通过分隔栏改变面板大小
+	fit:布局组件将自动适应父容器(默认是false)
+ -->
+<body class="easyui-layout">
+		<!-- layout页面布局 -->
+		<div data-options="region:'north'" style="height:50px"></div>
+		<div data-options="region:'west',split:true" title="菜单栏" style="width:200px;">
+			<div class="easyui-accordion" data-options="fit:true">
+				<div title="面板一">
+					<a id="btn" href="#" class="easyui-linkbutton" onclick="addTabs()" data-options="iconCls:'icon-ok'">新选项卡</a>	
+				</div>
+				<div title="面板二">面板二</div>
+				<div title="面板三">面板三</div>
+			</div>
+		</div>
+		<div data-options="region:'center',title:'内容栏',iconCls:'icon-ok'">
+			<div id="tt" class="easyui-tabs" data-options="fit:true">
+				<div title="选项卡一">面板一</div>
+				<div title="选项卡二">面板二</div>
+				<div title="选项卡三">面板三</div>
+			</div>
+		</div>
+	
+</body>
+</html>

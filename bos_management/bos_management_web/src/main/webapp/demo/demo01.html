@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+	<link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+	<!-- easyUI插件是依赖于jQuery html文件是从上往下地进行加载 所以先导jQuery -->
+	<script type="text/javascript" src="../js/jquery-1.8.3.js"></script>
+	<script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+</head>
+<body>
+	<h2>Basic DataGrid</h2>
+	<div style="margin:20px 0;"></div>
+	<table class="easyui-datagrid" title="Basic DataGrid" style="width:700px;height:250px"
+			data-options="singleSelect:true,collapsible:true,url:'datagrid_data1.json',method:'get'">
+		<thead>
+			<tr>
+			</tr>
+		</thead>
+	</table>
+</body>
+</html>

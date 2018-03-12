@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+	<link rel="stylesheet" href="../js/ztree/zTreeStyle.css" type="text/css">
+	<link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+	<!-- easyUI插件是依赖于jQuery html文件是从上往下地进行加载 所以先导jQuery -->
+	<script type="text/javascript" src="../js/jquery-1.8.3.js"></script>
+	<script type="text/javascript" src="../js/ztree/jquery.ztree.all-3.5.js"></script>
+	<script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+
+<script type="text/javascript">
+	function addTabs(){
+	//添加新选项卡面板
+		var result = $("#tt").tabs("exists","新选项卡面板")
+		if(result){
+			$("#tt").tabs("select","新选项卡面板")
+		}else{
+			$("#tt").tabs("add",{
+				title:"新选项卡面板",
+				selected:true
+			});
+		}		
+	}
+	
+
+</script>
+ 
+<script type="text/javascript">
+	/* 入口函数  当页面加载完了之后就直接加载这个方法
+		参数一:treeDemo标签对应的 class="ztree"是固定的
+		参数二:setting对应的是一个json数据 
+		参数三:zNodes 就是节点数据(数组里面的数据是json形式)
+	*/
+	$(function(){
+	var setting = {};
+	/*  这个是标准json  缺点就是数据量大的时候就显得很臃肿 
+	var zNodes = [
+	      //父节点
+	     {name:'父节点一',
+	     children:[
+	         {name:'子节点11'},         
+	         {name:'子节点12'},     
+	     ]},         
+	     {name:'节点二'},         
+	     {name:'节点三'},         
+	              ]; */
+	 /*	 这是简单json数据  
+	 */
+	 var setting = {
+				data: {
+					simpleData: {
+						enable:true,
+					}
+				}
+			};
+     /* 
+     	上面setting里面的数据  enable:true 是必须要有的  其他数据可有可无
+     	id:声明本节点的唯一标识
+     	pId:父节点的标识   当pId为0时则为 根节点
+     	
+     */      
+	 /* var zNodes = [
+	     {"id":1,   "pId":0,  "name":"test1"  },
+	     {"id":11,  "pId":1,  "name":"test11" },
+	     {"id":12,  "pId":1,  "name":"test12" },
+	     {"id":111, "pId":11, "name":"test111"}
+              ]; */
+		//使用ajax方法
+		$.get("../data/menu.json",function(data){
+			$.fn.zTree.init($("#treeDemo"), setting, data);
+		})
+	})
+</script>
+
+</head>
+<!--
+	给节点指定class就可以使用easyUI提供的控件 
+	easyUI中所有的控件命名规则:easyUI-控件名字
+	data-options:设置控件属性
+	title:标题
+	iconCls:指定图标,图标是在../js/easyui/themes/icon.css这里面
+	
+	region:定义布局面板的位置(只有north south east west center这五个值)
+	split:可以通过分隔栏改变面板大小
+	fit:布局组件将自动适应父容器(默认是false)
+ -->
+<body class="easyui-layout">
+		<!-- layout页面布局 -->
+		<div data-options="region:'north'" style="height:50px"></div>
+		<div data-options="region:'west',split:true" title="菜单栏" style="width:200px;">
+			<div class="easyui-accordion" data-options="fit:true">
+				<div title="面板一">
+					<a id="btn" href="#" class="easyui-linkbutton" onclick="addTabs()" data-options="iconCls:'icon-ok'">新选项卡</a>	
+				</div>
+				<div title="面板二">
+					<ul id="treeDemo" class="ztree"></ul>
+				</div>
+				<div title="面板三">面板三</div>
+			</div>
+		</div>
+		<div data-options="region:'center',title:'内容栏',iconCls:'icon-ok'">
+			<div id="tt" class="easyui-tabs" data-options="fit:true">
+				<div title="选项卡一">面板一</div>
+				<div title="选项卡二">面板二</div>
+				<div title="选项卡三">面板三</div>
+			</div>
+		</div>
+	
+</body>
+</html>
