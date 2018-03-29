@@ -9,6 +9,16 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
+  <!-- webService -->
+  <filter>
+  	<filter-name>CXF</filter-name>
+  	<filter-class>org.apache.cxf.transport.servlet.CXFServlet</filter-class>
+  </filter>
+  <filter-mapping>
+  	<filter-name>CXF</filter-name>
+  	<!-- 不能喝下面的struts的路径相同  以免两个框架起冲突 -->
+  	<url-pattern>/webService/*</url-pattern>
+  </filter-mapping>
   <!-- 指定Spring框架配置文件的位置 -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
