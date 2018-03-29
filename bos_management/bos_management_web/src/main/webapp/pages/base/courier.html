@@ -25,11 +25,31 @@
 			}
 			
 			function doDelete(){
-				alert("删除...");
+				var rows = $("#grid").datagrid("getSelections")
+				if(rows.length==0){
+					$.messager.alert("提示", "请选中你想删除的选项", "info")
+				}else{
+					$.messager.confirm("删除","确定要删除吗?", function(r){
+						if(r){
+							var arr = new Array();
+							for(var i=0;i<rows.length;i++){
+								//向数组插入数据
+								arr.push(rows[i].id)
+							}
+						//我们使用过得从页面发送请求到数据库三种方式
+						//form表单(简单的功能用from大材小用  这里不适合)  Ajax(因为要跳转页面 所以这里不适合) window.location.href
+							window.location.href="../../courierAction_batchDel.action?ids="+arr.toString()
+						}
+					})
+				}
 			}
 			
 			function doRestore(){
 				alert("将取派员还原...");
+			}
+			
+			function openSearchWindow(){
+				$("#searchWindow").window("open")
 			}
 			//工具栏
 			var toolbar = [ {
@@ -52,7 +72,12 @@
 				text : '还原',
 				iconCls : 'icon-save',
 				handler : doRestore
-			}];
+			},{
+				id : 'button-search',
+				text : '搜索',
+				iconCls : 'icon-search',
+				handler : openSearchWindow
+			} ];
 			// 定义列
 			var columns = [ [ {
 				field : 'id',
@@ -109,10 +134,10 @@
 				width : 80,
 				align : 'center',
 				formatter : function(data,row, index){
-					if(data=="0"){
-						return "正常使用"
+					if(data=="1"){
+						return "已作废"
 					}else{
-						return "已作废";
+						return "正常使用";
 					}
 				}
 			}, {
@@ -141,7 +166,7 @@
 					pageList: [30,50,100],
 					pagination : true,
 					toolbar : toolbar,
-					url : "../../data/courier.json",
+					url : "../../courierAction_pageQuery.action",
 					idField : 'id',
 					columns : columns,
 					onDblClickRow : doDblClickRow
@@ -164,6 +189,41 @@
 				alert("双击表格数据...");
 			}
 		</script>
+		<script type="text/javascript">
+			function submitData(){
+				if($("#courierForm").form("validate")){
+					//校验如果数据都填满就提交
+					$("#courierForm").submit()
+				}
+			}
+			
+			/* 这个方法是将表单中的数据序列化为json对象 */
+			$.fn.serializeJson=function(){  
+	            var serializeObj={};  
+	            var array=this.serializeArray();  
+	            var str=this.serialize();  
+	            $(array).each(function(){  
+	                if(serializeObj[this.name]){  
+	                    if($.isArray(serializeObj[this.name])){  
+	                        serializeObj[this.name].push(this.value);  
+	                    }else{  
+	                        serializeObj[this.name]=[serializeObj[this.name],this.value];  
+	                    }  
+	                }else{  
+	                    serializeObj[this.name]=this.value;   
+	                }  
+	            });  
+	            return serializeObj;  
+	        }; 
+			
+			function doSearch(){
+				//调用上面的方法 转换为json数据
+				var result = $("#searchForm").serializeJson()
+				$("#grid").datagrid("load",result);
+				//查询之后关闭窗口
+				$("#searchWindow").window("close")
+			}
+		</script>
 	</head>
 
 	<body class="easyui-layout" style="visibility:hidden;">
@@ -173,12 +233,12 @@
 		<div class="easyui-window" title="对收派员进行添加或者修改" id="addWindow" collapsible="false" minimizable="false" maximizable="false" style="top:20px;left:200px">
 			<div region="north" style="height:31px;overflow:hidden;" split="false" border="false">
 				<div class="datagrid-toolbar">
-					<a id="save" icon="icon-save" href="#" class="easyui-linkbutton" plain="true">保存</a>
+					<a  id="save" onclick="submitData()" icon="icon-save" href="#" class="easyui-linkbutton" plain="true">保存</a>
 				</div>
 			</div>
 
 			<div region="center" style="overflow:auto;padding:5px;" border="false">
-				<form>
+				<form id="courierForm" method="post" action="../../courierAction_save.action">
 					<table class="table-edit" width="80%" align="center">
 						<tr class="title">
 							<td colspan="4">收派员信息</td>
@@ -244,7 +304,7 @@
 		<!-- 查询快递员-->
 		<div class="easyui-window" title="查询快递员窗口" closed="true" id="searchWindow" collapsible="false" minimizable="false" maximizable="false" style="width: 400px; top:40px;left:200px">
 			<div style="overflow:auto;padding:5px;" border="false">
-				<form id="searchForm">
+				<form id="searchForm" >
 					<table class="table-edit" width="80%" align="center">
 						<tr class="title">
 							<td colspan="2">查询条件</td>
@@ -274,7 +334,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td colspan="2"><a id="searchBtn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a> </td>
+							<td colspan="2"><a onclick="doSearch()" id="searchBtn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a> </td>
 						</tr>
 					</table>
 				</form>
