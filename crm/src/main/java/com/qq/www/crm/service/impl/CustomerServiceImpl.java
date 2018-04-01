@@ -62,6 +62,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public void active(String telephone) {
+          customerRepository.active(telephone);
+    }
+    
+    @Override
     public Customer isActived(String telephone) {
           
         return customerRepository.findByTelephone(telephone);
@@ -72,5 +77,13 @@ public class CustomerServiceImpl implements CustomerService {
           
         return customerRepository.findByTelephoneAndPassword( telephone,  password);
     }
+
+    @Override
+    public String findByFixedAreaIdByAddress(String address) {
+          
+        return customerRepository.findByFixedAreaIdByAddress(address);
+    }
+
+    
 
 }

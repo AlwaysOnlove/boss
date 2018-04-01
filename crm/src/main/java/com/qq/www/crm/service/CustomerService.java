@@ -43,16 +43,29 @@ public interface CustomerService {
     @Path("/assignCustomers2FixedArea")
     void assignCustomers2FixedArea(@QueryParam("customerIds") Long[] customerIds,@QueryParam("fixedAreaId") String fixedAreaId);
     
+    //注册用户
     @POST
     @Path("/save")
     void save(Customer customer);
     
+    // 激活
+    @PUT
+    @Path("/active")
+    void active(@QueryParam("telephone") String telephone);
+    
+    //检查是否激活
     @GET
     @Path("/isActived")
     Customer isActived(@QueryParam("telephone") String telephone);
     
+    //登录
     @GET
     @Path("/login")
     Customer login(@QueryParam("telephone") String telephone,@QueryParam("password") String password);
+    
+    //根据地址查询定区ID
+    @GET
+    @Path("/findByFixedAreaIdByAddress")
+    String findByFixedAreaIdByAddress(@QueryParam("address") String address);
 }
   

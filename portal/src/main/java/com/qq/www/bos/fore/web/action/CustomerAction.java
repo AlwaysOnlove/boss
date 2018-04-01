@@ -2,6 +2,10 @@ package com.qq.www.bos.fore.web.action;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.jms.JMSException;
+import javax.jms.MapMessage;
+import javax.jms.Message;
+import javax.jms.Session;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -15,6 +19,8 @@ import org.apache.struts2.convention.annotation.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Controller;
 
 import com.aliyuncs.exceptions.ClientException;
@@ -43,16 +49,26 @@ public class CustomerAction extends ActionSupport implements ModelDriven<Custome
         return model;
     }
     
+    @Autowired
+    private JmsTemplate jmsTemplate;
+    
     @Action("customerAction_sendSMS")
     public String sendSMS(){
-        String code = RandomStringUtils.randomNumeric(6);
+        final String code = RandomStringUtils.randomNumeric(6);
         System.out.println(code);
         ServletActionContext.getRequest().getSession().setAttribute("serverCode", code);
-        try {
-            SmsUtils.sendSms(model.getTelephone(), code);
-        } catch (ClientException e) {
-            e.printStackTrace();  
+        
+        jmsTemplate.send("sms", new MessageCreator() {
+        
+        @Override
+        public Message createMessage(Session session) throws JMSException {
+            MapMessage mapMessage = session.createMapMessage();
+            mapMessage.setString("tel", model.getTelephone());
+            mapMessage.setString("code", code);
+            return mapMessage;
         }
+    });
+        
         return NONE;
     }
     
